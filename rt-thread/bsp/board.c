@@ -12,8 +12,6 @@
 #include <stdint.h>
 #include <rthw.h>
 #include <rtthread.h>
-#include "gw1ns4c.h"
-#include "gw1ns4c_conf.h"
 
 #define _SCB_BASE       (0xE000E010UL)
 #define _SYSTICK_CTRL   (*(rt_uint32_t *)(_SCB_BASE + 0x0))
@@ -31,6 +29,20 @@ extern void SystemCoreClockUpdate(void);
 // core clock.
 extern uint32_t SystemCoreClock;
 
+static uint32_t _SysTick_Config(rt_uint32_t ticks)
+{
+    if ((ticks - 1) > 0xFFFFFF)
+    {
+        return 1;
+    }
+    
+    _SYSTICK_LOAD = ticks - 1; 
+    _SYSTICK_PRI = 0xFF;
+    _SYSTICK_VAL  = 0;
+    _SYSTICK_CTRL = 0x07;  
+    
+    return 0;
+}
 
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
 #define RT_HEAP_SIZE 1024
@@ -45,21 +57,7 @@ RT_WEAK void *rt_heap_end_get(void)
     return rt_heap + RT_HEAP_SIZE;
 }
 #endif
-static void sys_tick_init(void)
-{
-	uint32_t temp;
-	
-	//24-bit register, max value is 16777215
-	//When SystemCoreClock is 25MHz, it is 671ms
-	//Set value of reload register
-	temp = (SystemCoreClock / 1000) - 1;
-	SysTick->LOAD = temp;
-	
-	SysTick->VAL = temp;	//Reset current counter value
 
-	//Select clock source, enable interrupt, enable counter
-	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk; 
-}
 /**
  * This function will initial your board.
  */
@@ -69,7 +67,7 @@ void rt_hw_board_init()
     SystemCoreClockUpdate();
     
     /* System Tick Configuration */
-    sys_tick_init();
+    _SysTick_Config(SystemCoreClock / RT_TICK_PER_SECOND);
 
     /* Call components board initial (use INIT_BOARD_EXPORT()) */
 #ifdef RT_USING_COMPONENTS_INIT
@@ -90,46 +88,4 @@ void SysTick_Handler(void)
 
     /* leave interrupt */
     rt_interrupt_leave();
-}
-
-
-static void uart_user_init(uint32_t baudrate)
-{
-	UART_InitTypeDef UART_InitStruct;
-
-	UART_InitStruct.UART_Mode.UARTMode_Tx = ENABLE;
-	UART_InitStruct.UART_Mode.UARTMode_Rx = ENABLE;
-	UART_InitStruct.UART_Int.UARTInt_Tx = DISABLE;
-	UART_InitStruct.UART_Int.UARTInt_Rx = DISABLE;
-	UART_InitStruct.UART_Ovr.UARTOvr_Tx = DISABLE;
-	UART_InitStruct.UART_Ovr.UARTOvr_Rx = DISABLE;
-	UART_InitStruct.UART_Hstm = DISABLE;
-	UART_InitStruct.UART_BaudRate = baudrate;
-
-	UART_Init(UART0,&UART_InitStruct);
-}
-
-
-void Board_Init( void )
-{
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	
-	uart_user_init(115200);	
-}
-INIT_BOARD_EXPORT(Board_Init);
-
-void rt_hw_console_output(const char *str)
-{
-    rt_size_t i = 0, size = 0;
-    char a = '\r';
-    size = rt_strlen(str);
-    
-    for (i = 0; i < size; i++)
-    {
-            if (*(str + i) == '\n')
-            {
-                    UART_SendChar(UART0, a);
-            }
-            UART_SendChar(UART0, *(str + i));
-    }
 }

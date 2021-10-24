@@ -33,7 +33,5 @@ char rt_hw_console_getchar(void)
     return ch;
 }
 
-
-
 #endif /* RT_USING_FINSH */
 

@@ -28,6 +28,7 @@ C_SOURCES =  \
 ../../components/finsh/cmd.c \
 ../../components/finsh/msh.c \
 ../../components/finsh/shell.c \
+../../components/finsh/finsh_port.c \
 ../../components/device/device.c \
 ../../src/clock.c \
 ../../src/components.c \
@@ -56,8 +57,7 @@ libraries/src/gw1ns4c_uart.c \
 libraries/src/gw1ns4c_wdog.c \
 libraries/src/system_gw1ns4c.c  \
 libraries/src/gw1ns4c_it.c \
-RTE/board.c \
-RTE/finsh_port.c \
+../board.c \
 applications/main.c
 
 # ASM sources
@@ -118,6 +118,7 @@ C_INCLUDES =  \
 -I../../components/finsh \
 -I../../include \
 -I../../include/libc \
+-I../	\
 -Ilibraries/inc
 
 
