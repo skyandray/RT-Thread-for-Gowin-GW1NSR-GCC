@@ -55,7 +55,7 @@ PERIPHERAL/Sources/gw1ns4c_syscon.c \
 PERIPHERAL/Sources/gw1ns4c_timer.c \
 PERIPHERAL/Sources/gw1ns4c_uart.c \
 PERIPHERAL/Sources/gw1ns4c_wdog.c \
-SYSTEM/system_gw1ns4c.c  \
+PERIPHERAL/Sources/system_gw1ns4c.c  \
 USER/board.c \
 USER/gw1ns4c_it.c \
 USER/finsh_port.c \
