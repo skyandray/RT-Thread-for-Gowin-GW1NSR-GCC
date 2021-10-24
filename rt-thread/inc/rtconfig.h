@@ -126,7 +126,9 @@
 //  <i>Default: 128  (128Byte)
 #define RT_CONSOLEBUF_SIZE          128
 // </h>
+#define RT_USING_FINSH
 
+// <<< Use Configuration Wizard in Context Menu >>>
 #if defined(RT_USING_FINSH)
     #define FINSH_USING_MSH
     #define FINSH_USING_MSH_ONLY
@@ -144,11 +146,9 @@
     //  <i>the history lines of finsh thread
     //  <i>Default: 5
     #define FINSH_HISTORY_LINES         1
-
     #define FINSH_USING_SYMTAB
     // </h>
 #endif
-
 // <<< end of configuration section >>>
 
 #endif

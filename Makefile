@@ -108,8 +108,7 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 AS_DEFS = 
 
 # C defines
-C_DEFS =  \
--DRT_USING_FINSH
+C_DEFS = 
 
 
 # AS includes
