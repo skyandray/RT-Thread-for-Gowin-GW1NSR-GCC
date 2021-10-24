@@ -120,31 +120,16 @@ INIT_BOARD_EXPORT(Board_Init);
 
 void rt_hw_console_output(const char *str)
 {
-	rt_size_t i = 0, size = 0;
-	char a = '\r';
-	size = rt_strlen(str);
-	
-	for (i = 0; i < size; i++)
-	{
-			if (*(str + i) == '\n')
-			{
-					UART_SendChar(UART0, a);
-			}
-			UART_SendChar(UART0, *(str + i));
-	}
-}
-
-char rt_hw_console_getchar(void)
-{
-	  int ch = -1;
-
-    if (UART0->STATE & UART_STATE_RXBF)
+    rt_size_t i = 0, size = 0;
+    char a = '\r';
+    size = rt_strlen(str);
+    
+    for (i = 0; i < size; i++)
     {
-        ch = (char)(UART0->DATA);
+            if (*(str + i) == '\n')
+            {
+                    UART_SendChar(UART0, a);
+            }
+            UART_SendChar(UART0, *(str + i));
     }
-		else
-		{
-			rt_thread_mdelay(10);
-		}
-    return ch;
 }
