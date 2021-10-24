@@ -25,7 +25,6 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-CORE/core_cm3.c \
 CORE/cpuport.c \
 finsh/cmd.c \
 finsh/msh.c \
