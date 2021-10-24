@@ -63,7 +63,7 @@ applications/main.c
 # ASM sources
 ASM_SOURCES =  \
 ../../libcpu/arm/cortex-m3/context_gcc.S \
-RTE/startup_gw1ns4c.S
+startup/startup_gcc.S
 
 
 
