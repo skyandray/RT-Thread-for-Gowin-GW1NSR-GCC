@@ -25,45 +25,45 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-CORE/cpuport.c \
-finsh/cmd.c \
-finsh/msh.c \
-finsh/shell.c \
-device/device.c \
-rt-thread/src/clock.c \
-rt-thread/src/components.c \
-rt-thread/src/cpu.c \
-rt-thread/src/idle.c \
-rt-thread/src/ipc.c \
-rt-thread/src/irq.c \
-rt-thread/src/kservice.c \
-rt-thread/src/mem.c \
-rt-thread/src/memheap.c \
-rt-thread/src/mempool.c \
-rt-thread/src/object.c \
-rt-thread/src/scheduler.c \
-rt-thread/src/slab.c \
-rt-thread/src/thread.c \
-rt-thread/src/timer.c \
-PERIPHERAL/Sources/gw1ns4c_gpio.c \
-PERIPHERAL/Sources/gw1ns4c_i2c.c \
-PERIPHERAL/Sources/gw1ns4c_misc.c \
-PERIPHERAL/Sources/gw1ns4c_rtc.c \
-PERIPHERAL/Sources/gw1ns4c_spi.c \
-PERIPHERAL/Sources/gw1ns4c_syscon.c \
-PERIPHERAL/Sources/gw1ns4c_timer.c \
-PERIPHERAL/Sources/gw1ns4c_uart.c \
-PERIPHERAL/Sources/gw1ns4c_wdog.c \
-PERIPHERAL/Sources/system_gw1ns4c.c  \
-USER/board.c \
-USER/gw1ns4c_it.c \
-USER/finsh_port.c \
-USER/main.c
+../../components/finsh/cmd.c \
+../../components/finsh/msh.c \
+../../components/finsh/shell.c \
+../../components/device/device.c \
+../../src/clock.c \
+../../src/components.c \
+../../src/cpu.c \
+../../src/idle.c \
+../../src/ipc.c \
+../../src/irq.c \
+../../src/kservice.c \
+../../src/mem.c \
+../../src/memheap.c \
+../../src/mempool.c \
+../../src/object.c \
+../../src/scheduler.c \
+../../src/slab.c \
+../../src/thread.c \
+../../src/timer.c \
+../../libcpu/arm/cortex-m3/cpuport.c \
+libraries/src/gw1ns4c_gpio.c \
+libraries/src/gw1ns4c_i2c.c \
+libraries/src/gw1ns4c_misc.c \
+libraries/src/gw1ns4c_rtc.c \
+libraries/src/gw1ns4c_spi.c \
+libraries/src/gw1ns4c_syscon.c \
+libraries/src/gw1ns4c_timer.c \
+libraries/src/gw1ns4c_uart.c \
+libraries/src/gw1ns4c_wdog.c \
+libraries/src/system_gw1ns4c.c  \
+libraries/src/gw1ns4c_it.c \
+RTE/board.c \
+RTE/finsh_port.c \
+applications/main.c
 
 # ASM sources
 ASM_SOURCES =  \
-CORE/context_gcc.s \
-STARTUP/startup_gw1ns4c.s
+../../libcpu/arm/cortex-m3/context_gcc.S \
+RTE/startup_gw1ns4c.S
 
 
 
@@ -115,12 +115,10 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--ICORE \
--Ifinsh \
--Irt-thread/inc \
--IPERIPHERAL/Includes \
--ISYSTEM \
--IUSER
+-I../../components/finsh \
+-I../../include \
+-I../../include/libc \
+-Ilibraries/inc
 
 
 # compile gcc flags
@@ -159,13 +157,13 @@ all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
 # list of ASM program objects
-OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
-vpath %.s $(sort $(dir $(ASM_SOURCES)))
+OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.S=.o)))
+vpath %.S $(sort $(dir $(ASM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
-$(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
